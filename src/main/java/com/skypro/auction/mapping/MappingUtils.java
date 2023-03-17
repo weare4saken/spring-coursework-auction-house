@@ -2,6 +2,7 @@ package com.skypro.auction.mapping;
 
 import com.skypro.auction.dto.BidDTO;
 import com.skypro.auction.dto.CreatedLotDTO;
+import com.skypro.auction.dto.FullLotDTO;
 import com.skypro.auction.dto.LotDTO;
 import com.skypro.auction.model.Bid;
 import com.skypro.auction.model.Lot;
@@ -29,7 +30,7 @@ public class MappingUtils {
         return dto;
     }
 
-    /*public static Lot fromLotDTOToLot(LotDTO lotDTO) {
+    public static Lot fromLotDTOToLot(LotDTO lotDTO) {
         Lot lot = new Lot();
         lot.setId(lotDTO.getId());
         lot.setStatus(lotDTO.getStatus());
@@ -38,21 +39,23 @@ public class MappingUtils {
         lot.setStartPrice(lotDTO.getStartPrice());
         lot.setBidPrice(lotDTO.getBidPrice());
         return lot;
-    }*/
+    }
 
     public static BidDTO fromBidToBidDTO(Bid bid) {
         BidDTO dto = new BidDTO();
         dto.setId(bid.getId());
         dto.setBidderName(bid.getBidderName());
         dto.setBidDate(bid.getBidDate());
+        return dto;
     }
 
     public static Bid fromBidDTOtoBid(BidDTO bidDTO) {
         Bid bid = new Bid();
         bid.setId(bidDTO.getId());
         bid.setBidderName(bidDTO.getBidderName());
-        bid.setBidDate(bidDTO.getBidDate());
+//        bid.setBidDate(bidDTO.getBidDate());
         return bid;
     }
 
+//    public FullLotDTO fromLotDTOToFullLotDTO (Lot)
 }

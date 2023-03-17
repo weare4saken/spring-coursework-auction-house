@@ -4,6 +4,7 @@ import com.skypro.auction.dto.BidDTO;
 import com.skypro.auction.dto.CreatedLotDTO;
 import com.skypro.auction.dto.LotDTO;
 import com.skypro.auction.enums.LotStatus;
+import com.skypro.auction.mapping.MappingUtils;
 import com.skypro.auction.model.Bid;
 import com.skypro.auction.model.Lot;
 import com.skypro.auction.service.BidService;
@@ -24,9 +25,11 @@ public class LotController {
     }
 
 
-    //если есть ошибки в полях вернуть 400 (СДЕЛАТЬ ПОТОМ)
     @PostMapping
     public ResponseEntity<LotDTO> createLot(@RequestBody CreatedLotDTO createdLotDTO) {
+        if(!lotService.checkToCorrect(createdLotDTO)) {
+            return ResponseEntity.badRequest().build();
+        }
         LotDTO createdLot = lotService.createLot(createdLotDTO);
         return ResponseEntity.ok(createdLot);
     }
@@ -60,6 +63,7 @@ public class LotController {
                 || biddingLot.getStatus().equals(LotStatus.STOPPED)) {
             return ResponseEntity.badRequest().build();
         }
+        bidDTO.setLotId(id);
         bidService.createBid(bidDTO);
         return ResponseEntity.ok().build();
     }
@@ -83,5 +87,10 @@ public class LotController {
         return ResponseEntity.ok().build();
     }
 
+//    @GetMapping("/{id}/first")
+//    public ResponseEntity<Bid> getInfoAboutFirstBidder(@PathVariable Long id) {
+//        LotDTO neededLot = MappingUtils. lotService.getLotById(id);
+//        neededLot.get
 
-}
+    }
+

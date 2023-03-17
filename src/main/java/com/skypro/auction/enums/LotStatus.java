@@ -1,8 +1,12 @@
 package com.skypro.auction.enums;
 
 public enum LotStatus {
-    STARTED,
-    STOPPED,
-    CREATED
+
+    CREATED("CREATED"),
+    STARTED("STARTED"),
+    STOPPED("STOPPED");
+
+    LotStatus(String string) {}
+
 
 }

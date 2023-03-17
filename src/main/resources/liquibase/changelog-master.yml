@@ -1,0 +1,6 @@
+databaseChangeLog:
+  - include:
+      file: liquibase/changesets/lot-table.sql
+
+  - include:
+      file: liquibase/changesets/bid-table.sql

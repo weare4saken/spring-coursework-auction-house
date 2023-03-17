@@ -1,5 +1,6 @@
 package com.skypro.auction.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreatedLotDTO {
 
+    @JsonIgnore
     private Long id;
     private String title;
     private String description;

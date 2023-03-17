@@ -4,11 +4,14 @@ import com.skypro.auction.dto.CreatedLotDTO;
 import com.skypro.auction.dto.LotDTO;
 import com.skypro.auction.enums.LotStatus;
 import com.skypro.auction.mapping.MappingUtils;
+import com.skypro.auction.model.Bid;
 import com.skypro.auction.model.Lot;
 import com.skypro.auction.repository.BidRepository;
 import com.skypro.auction.repository.LotRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -53,8 +56,28 @@ public class LotService {
         log.info("Lot status has been updated successfully. Now, it's " + LotStatus.STOPPED);
     }
 
+//    public Bid getInfoAboutFirstBidder(Long id){
+//        Lot lot = lotRepository.findById(id).get();
+//        List<Bid> bids = lot.getBids();
+//        lotRepository.
+//    }
 
 
+
+
+    public boolean checkToCorrect (CreatedLotDTO createdLotDTO) {
+        log.info("Checking lot fields to correct");
+        if(createdLotDTO.getTitle() == null || createdLotDTO.getTitle().isEmpty()) {
+            return false;
+        } else if (createdLotDTO.getDescription() == null || createdLotDTO.getDescription().isEmpty()) {
+            return false;
+        } else if (createdLotDTO.getStartPrice() == null || createdLotDTO.getBidPrice() == null) {
+            return false;
+        } else {
+            log.info("The check was successful");
+            return true;
+        }
+    }
 
 
 }
