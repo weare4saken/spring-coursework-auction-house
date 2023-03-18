@@ -4,10 +4,9 @@ import com.skypro.auction.dto.BidDTO;
 import com.skypro.auction.dto.CreatedLotDTO;
 import com.skypro.auction.dto.LotDTO;
 import com.skypro.auction.enums.LotStatus;
-import com.skypro.auction.mapping.MappingUtils;
 import com.skypro.auction.model.Bid;
 import com.skypro.auction.model.Lot;
-import com.skypro.auction.prejection.FirstBidder;
+import com.skypro.auction.prejection.BidderNameAndBidDate;
 import com.skypro.auction.service.BidService;
 import com.skypro.auction.service.LotService;
 import org.springframework.http.ResponseEntity;
@@ -89,11 +88,21 @@ public class LotController {
     }
 
     @GetMapping("/{id}/first")
-    public ResponseEntity<FirstBidder> getInfoAboutFirstBidder(@PathVariable Long id) {
-//        if(lotService.getLotById(id).get == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-        return ResponseEntity.ok(lotService.getInfoAboutFirstBidder(id));
+    public ResponseEntity<BidderNameAndBidDate> getInfoAboutFirstBidder(@PathVariable Long id) {
+        if(lotService.getLotById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        BidderNameAndBidDate firstBidder = lotService.getInfoAboutFirstBidder(id);
+        return ResponseEntity.ok(firstBidder);
+    }
+
+    @GetMapping("/{id}/frequent")
+    public ResponseEntity<BidderNameAndBidDate> getInfoAboutLudoman(@PathVariable Long id) {
+        if(lotService.getLotById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        BidderNameAndBidDate ludoman = lotService.getInfoAboutLudoman(id);
+        return ResponseEntity.ok(ludoman);
     }
 
 }

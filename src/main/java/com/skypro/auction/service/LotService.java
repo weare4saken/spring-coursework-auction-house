@@ -4,15 +4,12 @@ import com.skypro.auction.dto.CreatedLotDTO;
 import com.skypro.auction.dto.LotDTO;
 import com.skypro.auction.enums.LotStatus;
 import com.skypro.auction.mapping.MappingUtils;
-import com.skypro.auction.model.Bid;
 import com.skypro.auction.model.Lot;
-import com.skypro.auction.prejection.FirstBidder;
+import com.skypro.auction.prejection.BidderNameAndBidDate;
 import com.skypro.auction.repository.BidRepository;
 import com.skypro.auction.repository.LotRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -57,9 +54,14 @@ public class LotService {
         log.info("Lot status has been updated successfully. Now, it's " + LotStatus.STOPPED);
     }
 
-    public FirstBidder getInfoAboutFirstBidder(Long id){
+    public BidderNameAndBidDate getInfoAboutFirstBidder(Long id){
+        log.info("Get information about first bidder on lot");
         return lotRepository.getInfoAboutFirstBidder(id);
+    }
 
+    public BidderNameAndBidDate getInfoAboutLudoman(Long id) {
+        log.info("Get information about bidder who placed the most bids on the lot");
+        return lotRepository.getInfoAboutLudoman(id);
     }
 
 
