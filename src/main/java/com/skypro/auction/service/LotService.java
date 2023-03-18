@@ -90,6 +90,16 @@ public class LotService {
                 .collect(Collectors.toList());
     }
 
+    public Collection<FullLotDTO> getAllLotsForExport() {
+        Collection<LotDTO> lots = lotRepository.findAll().stream()
+                .map(MappingUtils::fromLotToLotDTO)
+                .collect(Collectors.toList());
+        Collection<FullLotDTO> exportLots = lots.stream()
+                .map(MappingUtils::fromLotDTOToFullLotDTO)
+                .collect(Collectors.toList());
+        return exportLots;
+    }
+
 
 
 

@@ -1,5 +1,8 @@
 package com.skypro.auction.controller;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+
 import com.skypro.auction.dto.BidDTO;
 import com.skypro.auction.dto.CreatedLotDTO;
 import com.skypro.auction.dto.FullLotDTO;
@@ -13,6 +16,9 @@ import com.skypro.auction.service.LotService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Collection;
 
 @RestController
@@ -131,5 +137,31 @@ public class LotController {
         return ResponseEntity.ok(lotService.getAllLots(lotStatus, pageNumber));
     }
 
+    //выгружается не CSV
+    @GetMapping("/export")
+    public String downloadLotTable(HttpServletResponse response) throws IOException {
+        Collection<FullLotDTO> lots = lotService.getAllLotsForExport();
+        StringWriter writer = new StringWriter();
+        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT
+                .withHeader("id", "title", "status", "lastBidder", "currentPrice")); //пропустить строку заголовков
+
+        for (FullLotDTO lot : lots) {
+            csvPrinter.printRecord(lot.getId(),
+                    lot.getTitle(),
+                    lot.getStatus(),
+//                    lot.getLastBid().getBidderName(), //как-то убрать null
+                    lot.getCurrentPrice()); //как-то сеттерить currentPrice в Service (может быть вынести в отдельный метод)
+        }
+        try {
+            csvPrinter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return writer.toString();
+    }
+
 }
+
+
+
 
