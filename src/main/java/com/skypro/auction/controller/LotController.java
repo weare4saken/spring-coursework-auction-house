@@ -2,6 +2,7 @@ package com.skypro.auction.controller;
 
 import com.skypro.auction.dto.BidDTO;
 import com.skypro.auction.dto.CreatedLotDTO;
+import com.skypro.auction.dto.FullLotDTO;
 import com.skypro.auction.dto.LotDTO;
 import com.skypro.auction.enums.LotStatus;
 import com.skypro.auction.model.Bid;
@@ -11,6 +12,8 @@ import com.skypro.auction.service.BidService;
 import com.skypro.auction.service.LotService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/lot")
@@ -103,6 +106,23 @@ public class LotController {
         }
         BidderNameAndBidDate ludoman = lotService.getInfoAboutLudoman(id);
         return ResponseEntity.ok(ludoman);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<FullLotDTO> getInfoAboutFullLot(@PathVariable Long id) {
+        if(lotService.getLotById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(lotService.getInfoAboutLot(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<Collection<LotDTO>> getAllLots(@RequestParam LotStatus lotStatus,
+                                                         @RequestParam(name = "page", required = false) Integer pageNumber) {
+        if(pageNumber == null){
+            pageNumber = 1;
+        }
+        return ResponseEntity.ok(lotService.getAllLots(lotStatus, pageNumber));
     }
 
 }

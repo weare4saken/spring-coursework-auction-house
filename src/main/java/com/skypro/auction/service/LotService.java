@@ -1,7 +1,6 @@
 package com.skypro.auction.service;
 
-import com.skypro.auction.dto.CreatedLotDTO;
-import com.skypro.auction.dto.LotDTO;
+import com.skypro.auction.dto.*;
 import com.skypro.auction.enums.LotStatus;
 import com.skypro.auction.mapping.MappingUtils;
 import com.skypro.auction.model.Lot;
@@ -9,7 +8,11 @@ import com.skypro.auction.prejection.BidderNameAndBidDate;
 import com.skypro.auction.repository.BidRepository;
 import com.skypro.auction.repository.LotRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -56,13 +59,35 @@ public class LotService {
 
     public BidderNameAndBidDate getInfoAboutFirstBidder(Long id){
         log.info("Get information about first bidder on lot");
-        return lotRepository.getInfoAboutFirstBidder(id);
+        return bidRepository.getInfoAboutFirstBidder(id);
     }
 
     public BidderNameAndBidDate getInfoAboutLudoman(Long id) {
         log.info("Get information about bidder who placed the most bids on the lot");
-        return lotRepository.getInfoAboutLudoman(id);
+        return bidRepository.getInfoAboutLudoman(id);
     }
+
+    public FullLotDTO getInfoAboutLot(Long id) {
+        log.info("Get information about lot with id: " + id);
+        FullLotDTO fullLotDTO = MappingUtils.fromLotDTOToFullLotDTO(getLotById(id));
+        Integer currentPrice = bidRepository.bidCount(id) * fullLotDTO.getBidPrice() + fullLotDTO.getStartPrice();
+        fullLotDTO.setCurrentPrice(currentPrice);
+        BidDTOforFullLot bidDTO = new BidDTOforFullLot();
+        bidDTO.setBidderName(bidRepository.getInfoAboutLastBidDate(id).getBidder_name());
+        bidDTO.setBidDate(bidRepository.getInfoAboutLastBidDate(id).getBid_date());
+        fullLotDTO.setLastBid(bidDTO);
+        return fullLotDTO;
+    }
+
+    public Collection<LotDTO> getAllLots(LotStatus lotStatus, Integer pageNumber) {
+        log.info("Get all lots");
+        PageRequest pageRequest = PageRequest.of(pageNumber - 1, 10);
+        return lotRepository.findAllByStatus(lotStatus).stream()
+                .map(MappingUtils::fromLotToLotDTO)
+                .collect(Collectors.toList());
+    }
+
+
 
 
 

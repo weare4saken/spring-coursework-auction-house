@@ -53,9 +53,17 @@ public class MappingUtils {
         Bid bid = new Bid();
         bid.setId(bidDTO.getId());
         bid.setBidderName(bidDTO.getBidderName());
-//        bid.setBidDate(bidDTO.getBidDate());
         return bid;
     }
 
-//    public FullLotDTO fromLotDTOToFullLotDTO (Lot)
+    public static FullLotDTO fromLotDTOToFullLotDTO (LotDTO lotDTO) {
+        FullLotDTO fullDTO = new FullLotDTO();
+        fullDTO.setId(lotDTO.getId());
+        fullDTO.setStatus(lotDTO.getStatus());
+        fullDTO.setTitle(lotDTO.getTitle());
+        fullDTO.setDescription(lotDTO.getDescription());
+        fullDTO.setStartPrice(lotDTO.getStartPrice());
+        fullDTO.setBidPrice(lotDTO.getBidPrice());
+        return fullDTO;
+    }
 }

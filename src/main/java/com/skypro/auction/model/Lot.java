@@ -24,4 +24,5 @@ public class Lot {
     @OneToMany(mappedBy = "lot")
     private List<Bid> bids;
 
+
 }
