@@ -95,6 +95,9 @@ public class LotController {
         if(lotService.getLotById(id) == null) {
             return ResponseEntity.notFound().build();
         }
+        if(lotService.getLotById(id).getStatus().equals(LotStatus.CREATED)) {
+            return ResponseEntity.badRequest().build();
+        }
         BidderNameAndBidDate firstBidder = lotService.getInfoAboutFirstBidder(id);
         return ResponseEntity.ok(firstBidder);
     }
@@ -103,6 +106,9 @@ public class LotController {
     public ResponseEntity<BidderNameAndBidDate> getInfoAboutLudoman(@PathVariable Long id) {
         if(lotService.getLotById(id) == null) {
             return ResponseEntity.notFound().build();
+        }
+        if(lotService.getLotById(id).getStatus().equals(LotStatus.CREATED)) {
+            return ResponseEntity.badRequest().build();
         }
         BidderNameAndBidDate ludoman = lotService.getInfoAboutLudoman(id);
         return ResponseEntity.ok(ludoman);

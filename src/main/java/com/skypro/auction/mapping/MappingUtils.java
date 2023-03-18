@@ -20,6 +20,9 @@ public class MappingUtils {
     }
 
     public static LotDTO fromLotToLotDTO(Lot lot) {
+        if(lot == null) {
+            return null;
+        }
         LotDTO dto = new LotDTO();
         dto.setId(lot.getId());
         dto.setStatus(lot.getStatus());

@@ -29,7 +29,7 @@ public class LotService {
 
     public LotDTO getLotById(Long lotId) {
         log.info("Getting lot with id: " + lotId);
-        return MappingUtils.fromLotToLotDTO(lotRepository.findById(lotId).get());
+        return MappingUtils.fromLotToLotDTO(lotRepository.findById(lotId).orElse(null));
     }
 
     public LotDTO createLot(CreatedLotDTO createdLotDTO){
