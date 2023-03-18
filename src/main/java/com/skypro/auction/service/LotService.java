@@ -72,10 +72,13 @@ public class LotService {
         FullLotDTO fullLotDTO = MappingUtils.fromLotDTOToFullLotDTO(getLotById(id));
         Integer currentPrice = bidRepository.bidCount(id) * fullLotDTO.getBidPrice() + fullLotDTO.getStartPrice();
         fullLotDTO.setCurrentPrice(currentPrice);
-        BidDTOforFullLot bidDTO = new BidDTOforFullLot();
-        bidDTO.setBidderName(bidRepository.getInfoAboutLastBidDate(id).getBidder_name());
-        bidDTO.setBidDate(bidRepository.getInfoAboutLastBidDate(id).getBid_date());
-        fullLotDTO.setLastBid(bidDTO);
+        if(bidRepository.bidCount(id) != 0) {
+            BidDTOforFullLot bidDTO = new BidDTOforFullLot();
+            bidDTO.setBidderName(bidRepository.getInfoAboutLastBidDate(id).getBidder_name());
+            bidDTO.setBidDate(bidRepository.getInfoAboutLastBidDate(id).getBid_date());
+            fullLotDTO.setLastBid(bidDTO);
+            return fullLotDTO;
+        }
         return fullLotDTO;
     }
 
