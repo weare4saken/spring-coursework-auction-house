@@ -27,9 +27,9 @@ public class LotService {
     }
 
 
-    public LotDTO getLotById(Long lotId) {
-        log.info("Getting lot with id: " + lotId);
-        return MappingUtils.fromLotToLotDTO(lotRepository.findById(lotId).orElse(null));
+    public LotDTO getLotById(Long id) {
+        log.info("Getting lot with id: " + id);
+        return MappingUtils.fromLotToLotDTO(lotRepository.findById(id).orElse(null));
     }
 
     public LotDTO createLot(CreatedLotDTO createdLotDTO){
@@ -70,7 +70,7 @@ public class LotService {
     public FullLotDTO getInfoAboutLot(Long id) {
         log.info("Get information about lot with id: " + id);
         FullLotDTO fullLotDTO = MappingUtils.fromLotDTOToFullLotDTO(getLotById(id));
-        Integer currentPrice = sumCurrentPrice(bidRepository.bidCount(id), fullLotDTO.getBidPrice(), fullLotDTO.getStartPrice());
+        Integer currentPrice = sumCurrentPrice(id, fullLotDTO.getBidPrice(), fullLotDTO.getStartPrice());
         fullLotDTO.setCurrentPrice(currentPrice);
         fullLotDTO.setLastBid(findInfoABoutLastBid(id));
         return fullLotDTO;
@@ -85,8 +85,9 @@ public class LotService {
     }
 
     public Collection<FullLotDTO> getAllLotsForExport() {
+        log.info("Get information about all lots to export in .csv file");
         return lotRepository.findAll().stream()
-                .map(MappingUtils::fromLotFullLotDTO)
+                .map(MappingUtils::fromLotToFullLotDTO)
                 .peek(lot -> lot.setCurrentPrice(sumCurrentPrice(lot.getId(), lot.getBidPrice(), lot.getStartPrice())))
                 .peek(lot -> lot.setLastBid(findInfoABoutLastBid(lot.getId())))
                 .collect(Collectors.toList());
@@ -109,14 +110,16 @@ public class LotService {
     }
 
     private Integer sumCurrentPrice(Long id, Integer bidPrice, Integer startPrice) {
+        log.info("Get information about currentPrice of lot");
         return (int) (bidRepository.bidCount(id) * bidPrice + startPrice);
     }
 
     private BidDTOforFullLot findInfoABoutLastBid(Long id) {
+        log.info("Get information about last bid on lot");
         if(bidRepository.bidCount(id) != 0) {
             BidDTOforFullLot bidDTO = new BidDTOforFullLot();
-            bidDTO.setBidderName(bidRepository.getInfoAboutLastBidDate(id).getBidder_name());
-            bidDTO.setBidDate(bidRepository.getInfoAboutLastBidDate(id).getBid_date());
+            bidDTO.setBidderName(bidRepository.getInfoAboutLastBidDate(id).getBidderName());
+            bidDTO.setBidDate(bidRepository.getInfoAboutLastBidDate(id).getBidDate());
             return bidDTO;
         } else {
             return null;

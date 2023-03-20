@@ -70,7 +70,7 @@ public class MappingUtils {
         return fullDTO;
     }
 
-    public static FullLotDTO fromLotFullLotDTO (Lot lot) {
+    public static FullLotDTO fromLotToFullLotDTO (Lot lot) {
         FullLotDTO dto = new FullLotDTO();
         dto.setId(lot.getId());
         dto.setStatus(lot.getStatus());
