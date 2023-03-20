@@ -79,7 +79,7 @@ public class LotService {
     public Collection<LotDTO> getAllLots(LotStatus lotStatus, Integer pageNumber) {
         log.info("Get all lots");
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, 10);
-        return lotRepository.findAllByStatus(lotStatus).stream()
+        return lotRepository.findAllByStatus(lotStatus, pageRequest).stream()
                 .map(MappingUtils::fromLotToLotDTO)
                 .collect(Collectors.toList());
     }
