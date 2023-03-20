@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
 
@@ -137,27 +138,28 @@ public class LotController {
         return ResponseEntity.ok(lotService.getAllLots(lotStatus, pageNumber));
     }
 
-    //выгружается не CSV
     @GetMapping("/export")
-    public String downloadLotTable(HttpServletResponse response) throws IOException {
+    public void downloadLotTable(HttpServletResponse response) throws IOException {
         Collection<FullLotDTO> lots = lotService.getAllLotsForExport();
         StringWriter writer = new StringWriter();
-        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT
-                .withHeader("id", "title", "status", "lastBidder", "currentPrice")); //пропустить строку заголовков
+        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT);
 
         for (FullLotDTO lot : lots) {
             csvPrinter.printRecord(lot.getId(),
                     lot.getTitle(),
                     lot.getStatus(),
-//                    lot.getLastBid().getBidderName(), //как-то убрать null
-                    lot.getCurrentPrice()); //как-то сеттерить currentPrice в Service (может быть вынести в отдельный метод)
+                    lot.getLastBid() != null ? lot.getLastBid().getBidderName() : "",
+                    lot.getCurrentPrice());
         }
-        try {
-            csvPrinter.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return writer.toString();
+        csvPrinter.flush();
+
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=\"lots.csv\"");
+
+        PrintWriter pWriter = response.getWriter();
+        pWriter.write(writer.toString());
+        pWriter.flush();
+        pWriter.close();
     }
 
 }

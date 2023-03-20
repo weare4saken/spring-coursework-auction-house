@@ -10,7 +10,7 @@ import java.util.Collection;
 @Repository
 public interface LotRepository extends JpaRepository<Lot, Long> {
 
-    public Collection<Lot> findAllByStatus(LotStatus lotStatus);
+    Collection<Lot> findAllByStatus(LotStatus lotStatus);
 
 
 }

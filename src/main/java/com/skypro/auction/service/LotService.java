@@ -70,15 +70,9 @@ public class LotService {
     public FullLotDTO getInfoAboutLot(Long id) {
         log.info("Get information about lot with id: " + id);
         FullLotDTO fullLotDTO = MappingUtils.fromLotDTOToFullLotDTO(getLotById(id));
-        Integer currentPrice = bidRepository.bidCount(id) * fullLotDTO.getBidPrice() + fullLotDTO.getStartPrice();
+        Integer currentPrice = sumCurrentPrice(bidRepository.bidCount(id), fullLotDTO.getBidPrice(), fullLotDTO.getStartPrice());
         fullLotDTO.setCurrentPrice(currentPrice);
-        if(bidRepository.bidCount(id) != 0) {
-            BidDTOforFullLot bidDTO = new BidDTOforFullLot();
-            bidDTO.setBidderName(bidRepository.getInfoAboutLastBidDate(id).getBidder_name());
-            bidDTO.setBidDate(bidRepository.getInfoAboutLastBidDate(id).getBid_date());
-            fullLotDTO.setLastBid(bidDTO);
-            return fullLotDTO;
-        }
+        fullLotDTO.setLastBid(findInfoABoutLastBid(id));
         return fullLotDTO;
     }
 
@@ -91,17 +85,12 @@ public class LotService {
     }
 
     public Collection<FullLotDTO> getAllLotsForExport() {
-        Collection<LotDTO> lots = lotRepository.findAll().stream()
-                .map(MappingUtils::fromLotToLotDTO)
+        return lotRepository.findAll().stream()
+                .map(MappingUtils::fromLotFullLotDTO)
+                .peek(lot -> lot.setCurrentPrice(sumCurrentPrice(lot.getId(), lot.getBidPrice(), lot.getStartPrice())))
+                .peek(lot -> lot.setLastBid(findInfoABoutLastBid(lot.getId())))
                 .collect(Collectors.toList());
-        Collection<FullLotDTO> exportLots = lots.stream()
-                .map(MappingUtils::fromLotDTOToFullLotDTO)
-                .collect(Collectors.toList());
-        return exportLots;
     }
-
-
-
 
 
 
@@ -116,6 +105,21 @@ public class LotService {
         } else {
             log.info("The check was successful");
             return true;
+        }
+    }
+
+    private Integer sumCurrentPrice(Long id, Integer bidPrice, Integer startPrice) {
+        return (int) (bidRepository.bidCount(id) * bidPrice + startPrice);
+    }
+
+    private BidDTOforFullLot findInfoABoutLastBid(Long id) {
+        if(bidRepository.bidCount(id) != 0) {
+            BidDTOforFullLot bidDTO = new BidDTOforFullLot();
+            bidDTO.setBidderName(bidRepository.getInfoAboutLastBidDate(id).getBidder_name());
+            bidDTO.setBidDate(bidRepository.getInfoAboutLastBidDate(id).getBid_date());
+            return bidDTO;
+        } else {
+            return null;
         }
     }
 

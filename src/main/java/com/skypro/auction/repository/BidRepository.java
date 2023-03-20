@@ -19,7 +19,7 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
     BidderNameAndBidDate getInfoAboutLudoman(Long id);
 
     @Query(value = "SELECT COUNT(*) FROM bid WHERE lot_id = ?1", nativeQuery = true)
-    Integer bidCount(Long id);
+    Long bidCount(Long id);
 
     @Query(value = "SELECT bidder_name, bid_date FROM bid WHERE lot_id = ?1 ORDER BY bid_date DESC LIMIT 1", nativeQuery = true)
     BidderNameAndBidDate getInfoAboutLastBidDate(Long id);

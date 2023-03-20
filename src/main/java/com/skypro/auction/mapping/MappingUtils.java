@@ -69,4 +69,17 @@ public class MappingUtils {
         fullDTO.setBidPrice(lotDTO.getBidPrice());
         return fullDTO;
     }
+
+    public static FullLotDTO fromLotFullLotDTO (Lot lot) {
+        FullLotDTO dto = new FullLotDTO();
+        dto.setId(lot.getId());
+        dto.setStatus(lot.getStatus());
+        dto.setTitle(lot.getTitle());
+        dto.setDescription(lot.getDescription());
+        dto.setStartPrice(lot.getStartPrice());
+        dto.setBidPrice(lot.getBidPrice());
+        return dto;
+    }
+
+
 }
